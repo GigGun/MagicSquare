@@ -1,24 +1,23 @@
 import numpy as np
+import itertools
 
 
 def ismagicrectangle(rect):
-    t = tuple(rect)
-    if len(t) != len(rect):  # проверка на уникальность
-        return False
+    magic_rect = rect.reshape(3, 3)
+    sum_line = set(magic_rect.sum(axis=0))
+    sum_column = set(magic_rect.sum(axis=1))
+    sum_diag1 = magic_rect.trace()
+    sum_diag2 = magic_rect[::-1].trace()
+    if len(sum_line) == len(sum_column) == 1:
+        if sum_diag1 == sum_diag2 and sum_diag1 in sum_line and sum_diag2 in sum_column:
+            return True
     else:
-        rect = rect.reshape(3, 3)
-        sum_line = np.sum(rect.sum(axis=0))
-        sum_column = np.sum(rect.sum(axis=1))
-        sum_diag1 = rect.trace()
-        sum_diag2 = rect[::-1].trace()
-        print(f'сумма строк: {rect.sum(axis=0)}')
-        print(f'сумма столбцов: {rect.sum(axis=1)}')
-        print(f'сумма диагоналей {sum_diag1}, {sum_diag2}')
-        return True if sum_line == sum_column and sum_diag1 == sum_diag2 else False
+        return False
 
 
-# a = tuple(i for i in range(100))
-arr = np.array([2, 7, 6, 9, 5, 1, 4, 3, 8])
-print(arr)
-print(arr.shape)
-print(ismagicrectangle(arr))
+count = 0  # счетчик магических квадратов
+for i in np.array(list(itertools.permutations(range(1, 10), 9))):
+    if ismagicrectangle(i):
+        print(f'{i} - True')
+        count += 1
+print(f'Всего - {count} магических квадратов')
